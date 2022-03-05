@@ -1,0 +1,5 @@
+This box does not come with download of LaTex. 
+I will get to provisioning this at some point but I really can't be bothered at this point.
+
+For now, below are the commands to download LaTex on the box:
+sudo apt-get install texlive-full
