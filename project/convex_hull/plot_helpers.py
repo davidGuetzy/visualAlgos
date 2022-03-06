@@ -15,3 +15,23 @@ def create_points_with_labels(grid, point_list, label_list):
             dot_list.append((dot, label))
             
     return dot_list
+
+def is_point_above_line(line, point):
+    """Given a line and point mobject,
+    If point is above line return True, else return False"""
+    end1 = line.get_points_defining_boundary()[0]
+    x1, y1, z1 = end1
+    slope = line.get_slope()
+    px, py, pz = point.get_all_points()[0]
+    
+    return py > slope*(px-x1) + y1
+
+def is_point_below_line(line, point):
+    """Given a line and point mobject,
+    If point is below line return True, else return False"""
+    end1 = line.get_points_defining_boundary()[0]
+    x1, y1, z1 = end1
+    slope = line.get_slope()
+    px, py, pz = point.get_all_points()[0]
+
+    return py < slope*(px-x1) + y1
