@@ -62,13 +62,11 @@ class ConvexHull(Scene):
                 candidate_triangle.set_fill(BLUE, opacity = .5)
                 candidate_area_text = Text(str(round(candidate_area / 2, 2)), font_size = 24)
                 candidate_area_text.shift([5.85, 1, 0])
-                
+
                 self.play(Create(candidate_triangle), Create(candidate_area_text))
                 self.wait(2)
 
-                if max_area > candidate_area:
-                    self.play(Uncreate(candidate_triangle))
-                elif candidate_area > max_area:
+                if candidate_area > max_area:
                     max_angle, max_area, max_triangle = self.replace_max_triangle_with_candidate(
                         [candidate_area, candidate_triangle, 
                         (Point(self.grid.c2p(x1, y1, 0)), 
@@ -80,12 +78,10 @@ class ConvexHull(Scene):
                     max_area_text = change_text_in_this_mobject(max_area_text, str(round(candidate_area / 2, 2)))
                     self.play(Create(max_area_text), run_time = .5)
 
-                else:
+                elif candidate_area == max_area:
                     candidate_angle = abs(Line(Point(self.grid.c2p(x3, y3, 0)), Point(self.grid.c2p(x1, y1, 0))).get_angle() 
                                         - Line(Point(self.grid.c2p(x3, y3, 0)), Point(self.grid.c2p(x2, y2, 0))).get_angle())
-                    if max_angle > candidate_angle:
-                        self.play(Uncreate(candidate_triangle))
-                    else:
+                    if candidate_angle > max_angle:
                         max_angle, max_area, max_triangle = self.replace_max_triangle_with_candidate(
                             [candidate_area, candidate_triangle, 
                             (Point(self.grid.c2p(x1, y1, 0)), 
@@ -97,7 +93,8 @@ class ConvexHull(Scene):
                         max_area_text = change_text_in_this_mobject(max_area_text, str(round(candidate_area / 2, 2)))
                         self.play(Create(max_area_text), run_time = .5)
                 
-                self.play(Uncreate(candidate_area_text))
+                # In all cases, we want to undraw the candidate triangle and its text
+                self.play(Uncreate(candidate_triangle), Uncreate(candidate_area_text))
         
         self.play(Uncreate(midline), Uncreate(max_area_text))
         if max_point is not None:
@@ -113,15 +110,14 @@ class ConvexHull(Scene):
         candidate_area, candidate_triangle, candidate_vertices = candidate_info
         p1, p2, p3 = candidate_vertices
         if max_triangle is not None:
-            self.play(Uncreate(max_triangle))
+            self.play(Uncreate(max_triangle), run_time = .25)
         
         max_angle = abs(Line(p3, p1).get_angle() - Line(p3, p2).get_angle())
         max_triangle = candidate_triangle.copy()
         max_triangle.set_color(PURPLE)
         max_triangle.set_fill(PURPLE)
         self.play(
-            Create(max_triangle),
-            Uncreate(candidate_triangle), run_time = .25
+            Create(max_triangle), run_time = .25
         )
 
         return [max_angle, candidate_area, max_triangle]
