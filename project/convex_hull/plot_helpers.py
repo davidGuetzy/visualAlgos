@@ -1,7 +1,16 @@
 # plot_helpers.py
 # This file contains some helper functions for manim plots
-
+import random
+from itertools import product
+from random import sample
 from manim import *
+
+def create_random_points_and_labels(num):
+    """Creates a set of num unique tuples for this grid"""
+    pts = sample(list(product(range(11), repeat = 2)), k=num)
+    pts.sort()
+    labels = ['p' + str(i+1) for i in range(num)]
+    return pts, labels
 
 def create_points_with_labels(grid, point_list, label_list):
     """Given a list of tuples and string labels,
